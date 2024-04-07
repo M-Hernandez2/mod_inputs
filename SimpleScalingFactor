@@ -1,0 +1,50 @@
+#April 3, 2024
+#using the historic P&T from 1920-2020 and the projected sampling space, create
+#scaling factors to predict potential P&T for 100 years in future
+#simple brute force method opposed to markov model
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+#call in historic and sampled data
+hist_all = pd.read_excel("C:/Users\mjh7517\OneDrive - The Pennsylvania State University\Downloads\SWI Research\Sampling_Outputs\simpleScaling.xlsx", sheet_name='hist')
+sobol_space = pd.read_excel("C:/Users\mjh7517\OneDrive - The Pennsylvania State University\Downloads\SWI Research\Sampling_Outputs\simpleScaling.xlsx", sheet_name='sobol')
+#print(hist_all.head())
+
+#create variables for each
+hist_t = hist_all['t']
+hist_p = hist_all['p']
+t_avg = 56.48911
+p_avg = 42.42327
+#print(hist_t)
+
+sobol_t = sobol_space['t']
+sobol_p = sobol_space['p']
+#print(sobol_t)
+
+#loop through sobol t with historic t values to create scaling factor, then do same with p
+t_scale = []
+p_scale = []
+for i in range(len(sobol_t)):
+    x = sobol_t[i] / t_avg
+    t_scale.append(x)
+for i in range(len(sobol_p)):
+    x = sobol_p[i] / p_avg
+    p_scale.append(x)
+#print(p_scale)
+
+#now have scaling factor so create time series for 200 sample future scenarios
+#loop through the historic and multiply each by scaling factor and save as a new list, seperate for p and t
+count = 0
+list_of_lists = []
+while count <= 200:
+    for i in range(len(hist_t)):
+        scalar = 0
+        new_list = []
+
+        count += 1
+        scalar += 1
+###^ change hist[i] = to a new list, need to create a new list for every run!!!
+
+
