@@ -1,0 +1,118 @@
+#July 14, 2024
+#Using NOAA annual and monthly average temperature and sum precipitation
+#used to see if correltation between temp and recip
+#see if temp and precip are a markov chain
+#IMPORTANT: temperature follows markovian poroperties, but precipitation does not
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+
+
+p_t_data = pd.read_excel('C:/Users\mjh7517\OneDrive - The Pennsylvania State University\Downloads\hist_noaa_data_new.xlsx', sheet_name='corr_data')
+
+#plt.scatter(p_t_data['PRCP'], p_t_data['TAVG'])
+#plt.title('NOAA Historic Precip & Temp Annual Averages')
+#plt.xlabel('precip (mm)')
+#plt.ylabel('temp (celsius)')
+#plt.show()
+
+#seeing if precip and temp are correlated
+#print(p_t_data.corr(method='pearson', min_periods=1))
+#print(p_t_data.corr(method='kendall', min_periods=1))
+#print(p_t_data.corr(method='spearman', min_periods=1))
+
+#checking if precip and temp are markovian
+#partial autocorrelation function
+p_pacf = sm.tsa.stattools.pacf(p_t_data['PRCP'], nlags=20, method='ywmle', alpha=None)
+t_pacf = sm.tsa.stattools.pacf(p_t_data['TAVG'], nlags=20, method='ywmle', alpha=None)
+
+x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+'''plt.stem(x, p_pacf)
+plt.title('Historic Precipitation Partial Autocorrelation Function')
+plt.ylim(-1, 1)
+plt.show()
+
+plt.stem(x, t_pacf)
+plt.title('Historic Temperature Partial Autocorrelation Function')
+plt.ylim(-1, 1)
+plt.show()'''
+
+#full autocorrelation function
+p_afc = sm.tsa.stattools.acf(p_t_data['PRCP'], adjusted=False, nlags=None, qstat=False, fft=True, alpha=None, bartlett_confint=True, missing='none')
+t_afc = sm.tsa.stattools.acf(p_t_data['TAVG'], adjusted=False, nlags=None, qstat=False, fft=True, alpha=None, bartlett_confint=True, missing='none')
+
+
+#plt.stem(x, p_afc)
+#plt.title('Historic Precipitation Autocorrelation Function')
+#plt.ylim(-1, 1)
+#plt.show()
+
+#plt.stem(x, t_afc)
+#plt.ylim(-1, 1)
+#plt.title('Historic Temperature Autocorrelation Function')
+#plt.show()
+
+#autocorrelations for precip and temp
+'''fig, ax = plt.subplots()
+sm.graphics.tsa.plot_acf(p_t_data['PRCP'], ax=ax, lags=None, alpha=0.05, use_vlines=True, adjusted=False, fft=False, missing='none')
+ax.set_title('Precipitation Autocorrelation')
+plt.show()
+
+fig, ax = plt.subplots()
+sm.graphics.tsa.plot_acf(p_t_data['TAVG'], ax=ax, lags=None, alpha=0.05, use_vlines=True, adjusted=False, fft=False, missing='none')
+ax.set_title('Temperature Autocorrelation')
+plt.show()
+
+#partial autocorrelation for precip and temp
+fig, ax = plt.subplots()
+sm.graphics.tsa.plot_pacf(p_t_data['PRCP'], ax=ax, lags=None, alpha=0.05, use_vlines=True)
+ax.set_title('Precipitation Partial-Autocorrelation')
+plt.show()
+
+fig, ax = plt.subplots()
+sm.graphics.tsa.plot_pacf(p_t_data['TAVG'], ax=ax, lags=None, alpha=0.05, use_vlines=True)
+ax.set_title('Temperature Partial-Autocorrelation')
+plt.show()'''
+
+
+#usign an AR(1) model to further see if results are correlated
+model = sm.tsa.ARIMA(p_t_data['PRCP'], order=(1,0,0))
+results = model.fit()
+print(results.summary())
+fitted = results.fittedvalues
+resids = results.resid
+
+plt.plot(resids)
+plt.title('Precipitation Residuals of AR(1) Model')
+plt.xlabel('Time')
+plt.ylabel('Residuals')
+plt.show()
+
+plt.plot(p_t_data['PRCP'], label='Origional Precip')
+plt.plot(fitted, label='Fitted Precip', linestyle='--')
+plt.legend()
+plt.title('Precipitation AR(1) Model Fit')
+plt.show()
+
+
+
+model2 = sm.tsa.ARIMA(p_t_data['TAVG'], order=(1,0,0))
+results2 = model2.fit()
+print(results2.summary())
+fitted2 = results2.fittedvalues
+resids2 = results2.resid
+
+plt.plot(resids2)
+plt.title('Temperature Residuals of AR(1) Model')
+plt.xlabel('Time')
+plt.ylabel('Residuals')
+plt.show()
+
+plt.plot(p_t_data['TAVG'], label='Origional Temp')
+plt.plot(fitted2, label='Fitted Temp', linestyle='--')
+plt.legend()
+plt.title('Temperature AR(1) Model Fit')
+plt.show()
+
