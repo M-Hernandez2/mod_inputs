@@ -1,0 +1,89 @@
+#July 8, 2024
+#output from initial 8 modflow runs with just highest and lowest recharge and sea level rise combinat6ions and with or without irrigation
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+#read excel file and appropiate page
+maxRmaxSLR = pd.read_excel('C:/Users\mjh7517\OneDrive - The Pennsylvania State University\Downloads\mod_test1_plots.xlsx', sheet_name='maxR_maxSLR')
+maxRminSLR = pd.read_excel('C:/Users\mjh7517\OneDrive - The Pennsylvania State University\Downloads\mod_test1_plots.xlsx', sheet_name='maxR_minSLR')
+minRmaxSLR = pd.read_excel('C:/Users\mjh7517\OneDrive - The Pennsylvania State University\Downloads\mod_test1_plots.xlsx', sheet_name='minR_maxSLR')
+minRminSLR = pd.read_excel('C:/Users\mjh7517\OneDrive - The Pennsylvania State University\Downloads\mod_test1_plots.xlsx', sheet_name='minR_minSLR')
+minRmaxSLR_irrig = pd.read_excel('C:/Users\mjh7517\OneDrive - The Pennsylvania State University\Downloads\mod_test1_plots.xlsx', sheet_name='minR_maxSLR_irrig')
+maxRmaxSLR_irrig = pd.read_excel('C:/Users\mjh7517\OneDrive - The Pennsylvania State University\Downloads\mod_test1_plots.xlsx', sheet_name='maxR_maxSLR_irrig')
+maxRminSLR_irrig = pd.read_excel('C:/Users\mjh7517\OneDrive - The Pennsylvania State University\Downloads\mod_test1_plots.xlsx', sheet_name='maxR_minSLR_irrig')
+minRminSLR_irrig = pd.read_excel('C:/Users\mjh7517\OneDrive - The Pennsylvania State University\Downloads\mod_test1_plots.xlsx', sheet_name='minR_minSLR_irrig')
+
+
+#create year variable and data variable
+year = maxRmaxSLR['year']
+maxRmaxSLR.drop(columns=maxRmaxSLR.columns[0], axis=1, inplace=True)
+maxRminSLR.drop(columns=maxRminSLR.columns[0], axis=1, inplace=True)
+minRmaxSLR.drop(columns=minRmaxSLR.columns[0], axis=1, inplace=True)
+minRminSLR.drop(columns=minRminSLR.columns[0], axis=1, inplace=True)
+minRmaxSLR_irrig.drop(columns=minRmaxSLR_irrig.columns[0], axis=1, inplace=True)
+maxRmaxSLR_irrig.drop(columns=maxRmaxSLR_irrig.columns[0], axis=1, inplace=True)
+maxRminSLR_irrig.drop(columns=maxRminSLR_irrig.columns[0], axis=1, inplace=True)
+minRminSLR_irrig.drop(columns=minRminSLR_irrig.columns[0], axis=1, inplace=True)
+
+
+#create time series
+fig, ax = plt.subplots(figsize=(12,6))
+ax.axhline(y=250, color='black', linewidth=3.0, linestyle='dashed')
+ax.plot(year, maxRmaxSLR)
+ax.set_ylabel('chloride concentration (mg/L)')
+ax.set_title('Chloride Concentration at Wells, Max Recharge & Max SLR Scenario')
+plt.show()
+
+fig, ax = plt.subplots(figsize=(12,6))
+ax.axhline(y=250, color='black', linewidth=3.0, linestyle='dashed')
+ax.plot(year, maxRminSLR)
+ax.set_ylabel('chloride concentration (mg/L)')
+ax.set_title('Chloride Concentration at Wells, Max Recharge & Min SLR Scenario')
+plt.show()
+
+fig, ax = plt.subplots(figsize=(12,6))
+ax.axhline(y=250, color='black', linewidth=3.0, linestyle='dashed')
+ax.plot(year, minRmaxSLR)
+ax.set_ylabel('chloride concentration (mg/L)')
+ax.set_title('Chloride Concentration at Wells, Min Recharge & Max SLR Scenario')
+plt.show()
+
+fig, ax = plt.subplots(figsize=(12,6))
+ax.axhline(y=250, color='black', linewidth=3.0, linestyle='dashed')
+ax.plot(year, minRminSLR)
+ax.set_ylabel('chloride concentration (mg/L)')
+ax.set_title('Chloride Concentration at Wells, Min Recharge & Min SLR Scenario')
+plt.show()
+
+#NOW ADDING IN IRRIGATION AND MUNICIPAL PUMPING
+fig, ax = plt.subplots(figsize=(12,6))
+ax.axhline(y=250, color='black', linewidth=3.0, linestyle='dashed')
+ax.plot(year, minRmaxSLR_irrig)
+ax.set_ylabel('chloride concentration (mg/L)')
+ax.set_title('Chloride Concentration at Wells, Min Recharge, Max SLR Scenario & Irrigation')
+plt.show()
+
+fig, ax = plt.subplots(figsize=(12,6))
+ax.axhline(y=250, color='black', linewidth=3.0, linestyle='dashed')
+ax.plot(year, maxRmaxSLR_irrig)
+ax.set_ylabel('chloride concentration (mg/L)')
+ax.set_title('Chloride Concentration at Wells, Max Recharge, Max SLR Scenario & Irrigation')
+plt.show()
+
+fig, ax = plt.subplots(figsize=(12,6))
+ax.axhline(y=250, color='black', linewidth=3.0, linestyle='dashed')
+ax.plot(year, maxRminSLR_irrig)
+ax.set_ylabel('chloride concentration (mg/L)')
+ax.set_title('Chloride Concentration at Wells, Max Recharge, Min SLR Scenario & Irrigation')
+plt.show()
+
+fig, ax = plt.subplots(figsize=(12,6))
+ax.axhline(y=250, color='black', linewidth=3.0, linestyle='dashed')
+ax.plot(year, minRminSLR_irrig)
+ax.set_ylabel('chloride concentration (mg/L)')
+ax.set_title('Chloride Concentration at Wells, Min Recharge, Min SLR Scenario & Irrigation')
+plt.show()
+
